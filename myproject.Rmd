@@ -1,0 +1,325 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(sf)
+library(mapSpain)
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r}
+mydata<-read.csv("~/Desktop/estadistica/statistics2/Provincias_datos.csv")
+mydata
+```
+```{r}
+#Getting the total number of deaths by province differentiating between sex
+totaldata_sex <- mydata[mydata$Mes == "Total",]
+totaldata_sex <- totaldata_sex[totaldata_sex$Lugar != "Total",]
+totaldata_sex
+```
+```{r}
+totaldata <- totaldata_sex[totaldata_sex$Sexo == "Total",] 
+totaldata # totales por provincia sin diferencia sexo
+total_sum <- totaldata[,c(1,4)]
+total_sum # totales por provincia en resumen
+```
+```{r}
+# Getting province codes
+cpro <- esp_dict_region_code(total_sum$Lugar, origin = "text", destination = "cpro")
+total_sum$cpro <- cpro
+total_sum
+```
+
+
+
+```{r}
+# Extracting population in 2019 from the MapSpain package
+census <- mapSpain::pobmun19
+
+codelist <- mapSpain::esp_codelist
+
+census <-
+  unique(merge(census, codelist[, c("cpro", "codauto")], all.x = TRUE))
+
+census_prov <-
+  aggregate(cbind(pob19, men, women) ~ cpro, data = census, sum)
+
+census_prov$porc_women <- census_prov$women / census_prov$pob19
+census_prov$porc_women_lab <-
+  paste0(round(100 * census_prov$porc_women, 2), "%")
+
+total_sum<- total_sum[order(total_sum$cpro),] # order by cpro (codigo de provicincias)
+
+# Calculate death rate
+death_census <- merge(total_sum, census_prov)
+death_census$porc_muerte <- death_census$Total / death_census$pob19
+death_census$porc_muerte_lab <-
+  paste0(round(100000 * death_census$porc_muerte, 2), "%")
+death_census
+
+
+```
+## Tasa de defunción por provincia en 2020
+```{r}
+esp_prov <- esp_get_prov_siane() # esp_get_prov() tb funciona y no se cual es la diferencia
+esp_prov <- merge(esp_prov, death_census)
+can_prov <- esp_get_can_provinces()
+Can <- esp_get_can_box()
+
+
+ggplot(esp_prov) +
+  geom_sf(aes(fill = porc_muerte),
+    color = "grey70",
+    linewidth = .3, 
+  ) +
+  geom_sf(data = Can, color = "grey70") +
+  #geom_sf_label(aes(label = porc_muerte_lab),
+    #fill = "white", alpha = 0.5,
+    #size = 3,
+    #label.size = 0
+  #) +
+  scale_fill_gradientn(
+    colors = hcl.colors(10, "Reds", rev = TRUE),
+    n.breaks = 10,
+    #labels = function(x) {
+      #sprintf("%1.0f", x)
+    #},
+    labels = function(x) {
+      sprintf("%1.0f",100000 * x)
+    },
+    guide = guide_legend(title = "Ratio muertes")
+  ) +
+   labs(
+    #fill = "Habitantes",
+    title = "Defunciones en España cada 100.000 habitantes",
+    subtitle = "Datos INE (2020)"
+  ) +
+  geom_sf(data = can_prov) +
+  geom_sf(data = Can) +
+  #theme_light() +
+  theme_void() +
+  theme(legend.position = c(0.1, 0.6),
+    #plot.title = element_text(hjust = .6),
+    #plot.subtitle = element_text(hjust = .6)
+    )
+
+```
+## Muertes totales por provincia en 2020
+```{r}
+esp_prov <- esp_get_prov_siane() # esp_get_prov() tb funciona y no se cual es la diferencia
+esp_prov <- merge(esp_prov, death_census)
+can_prov <- esp_get_can_provinces()
+Can <- esp_get_can_box()
+
+
+ggplot(esp_prov) +
+  geom_sf(aes(fill = Total),
+    color = "grey70",
+    linewidth = .3, 
+  ) +
+  geom_sf(data = Can, color = "grey70") +
+  #geom_sf_label(aes(label = porc_muerte_lab),
+    #fill = "white", alpha = 0.5,
+    #size = 3,
+    #label.size = 0
+  #) +
+  scale_fill_gradientn(
+    colors = hcl.colors(10, "Reds", rev = TRUE),
+    n.breaks = 10,
+    #labels = function(x) {
+      #sprintf("%1.0f", x)
+    #},
+    labels = function(x) {
+      sprintf("%1.0f", x)
+    },
+    guide = guide_legend(title = "Número de muertes")
+  ) +
+   labs(
+    #fill = "Habitantes",
+    title = "Defunciones en España",
+    subtitle = "Datos INE (2020)"
+  ) +
+  geom_sf(data = can_prov) +
+  geom_sf(data = Can) +
+  #theme_light() +
+  theme_void() +
+  theme(legend.position = c(0.1, 0.6),
+    #plot.title = element_text(hjust = .6),
+    #plot.subtitle = element_text(hjust = .6)
+    )
+
+```
+## Densidad de población en España en 2019
+```{r}
+esp_prov <- esp_get_prov_siane() # esp_get_prov() tb funciona y no se cual es la diferencia
+esp_prov <- merge(esp_prov, census_prov)
+can_prov <- esp_get_can_provinces()
+Can <- esp_get_can_box()
+
+
+
+#CCAA_sf <- merge(CCAA_sf, census_ccaa)
+#Can <- esp_get_can_box()
+
+ggplot(esp_prov) +
+  geom_sf(aes(fill = pob19),
+    color = "grey70",
+    linewidth = .3, 
+  ) +
+  geom_sf(data = Can, color = "grey70") +
+  #geom_sf_label(aes(label = pob19),
+    #fill = "white", alpha = 0.5,
+    #size =2,
+    #label.size = 0
+  #) +
+  scale_fill_gradientn(
+    colors = hcl.colors(10, "Blues", rev = TRUE),
+    n.breaks = 10,
+    labels = function(x) {
+      sprintf("%1.0f", x)
+    },
+    #labels = function(x) {
+      #sprintf("%1.1f%%", 100 * x)
+    #},
+    guide = guide_legend(title = "Habitantes")
+  ) +
+   labs(
+    #fill = "Habitantes",
+    title = "Densidad de población en España",
+    subtitle = "Datos INE (2019)"
+  ) +
+  geom_sf(data = can_prov) +
+  geom_sf(data = Can) +
+  #theme_light() +
+  theme_void() +
+  theme(legend.position = c(0.1, 0.6),
+    #plot.title = element_text(hjust = .6),
+    #plot.subtitle = element_text(hjust = .6)
+    )
+
+```
+## Tasa de defunción en enero 2020
+```{r}
+enero <- mydata[mydata$Mes == "Enero",]
+enero <- enero[enero$Lugar != "Total",]
+enero <- enero[enero$Sexo == "Total",]
+enero <- enero[,c(1,4)]
+cpro <- esp_dict_region_code(enero$Lugar, origin = "text", destination = "cpro")
+enero$cpro <- cpro
+enero <- enero[order(enero$cpro),] # order by cpro (codigo de provicincias)
+rate_enero <- merge(enero, census_prov)
+rate_enero$porc_muerte <- rate_enero$Total / rate_enero$pob19
+rate_enero$porc_muerte_lab <-
+  paste0(round(100000 * rate_enero$porc_muerte, 2), "%")
+rate_enero
+```
+```{r}
+esp_prov <- esp_get_prov_siane() # esp_get_prov() tb funciona y no se cual es la diferencia
+esp_prov <- merge(esp_prov, rate_enero)
+can_prov <- esp_get_can_provinces()
+Can <- esp_get_can_box()
+
+
+ggplot(esp_prov) +
+  geom_sf(aes(fill = porc_muerte),
+    color = "grey70",
+    linewidth = .3, 
+  ) +
+  geom_sf(data = Can, color = "grey70") +
+  #geom_sf_label(aes(label = porc_muerte_lab),
+    #fill = "white", alpha = 0.5,
+    #size = 3,
+    #label.size = 0
+  #) +
+  scale_fill_gradientn(
+    colors = hcl.colors(10, "Greens", rev = TRUE),
+    n.breaks = 6,
+    limits = c(0, 130/100000),
+    #labels = function(x) {
+      #sprintf("%1.0f", x)
+    #},
+    labels = function(x) {
+      sprintf("%1.0f",100000 * x)
+    },
+    guide = guide_legend(title = "Ratio muertes")
+  ) +
+   labs(
+    #fill = "Habitantes",
+    title = "Defunciones en España cada 100.000 habitantes en Enero 2020",
+    subtitle = "Datos INE (2020)"
+  ) +
+  geom_sf(data = can_prov) +
+  geom_sf(data = Can) +
+  #theme_light() +
+  theme_void() +
+  theme(legend.position = c(0.1, 0.6),
+    #plot.title = element_text(hjust = .6),
+    #plot.subtitle = element_text(hjust = .6)
+    )
+
+```
+## Tasa de defunión en Abril 2020
+```{r}
+abril <- mydata[mydata$Mes == "Abril",]
+abril <- abril[abril$Lugar != "Total",]
+abril <- abril[abril$Sexo == "Total",]
+abril <- abril[,c(1,4)]
+cpro <- esp_dict_region_code(abril$Lugar, origin = "text", destination = "cpro")
+abril$cpro <- cpro
+abril <- abril[order(abril$cpro),] # order by cpro (codigo de provicincias)
+rate_abril <- merge(abril, census_prov)
+rate_abril$porc_muerte <- rate_abril$Total / rate_abril$pob19
+rate_abril$porc_muerte_lab <-
+  paste0(round(100000 * rate_abril$porc_muerte, 2), "%")
+rate_abril
+
+```
+
+```{r}
+esp_prov <- esp_get_prov_siane() # esp_get_prov() tb funciona y no se cual es la diferencia
+esp_prov <- merge(esp_prov, rate_abril)
+can_prov <- esp_get_can_provinces()
+Can <- esp_get_can_box()
+
+
+ggplot(esp_prov) +
+  geom_sf(aes(fill = porc_muerte),
+    color = "grey70",
+    linewidth = .3, 
+  ) +
+  geom_sf(data = Can, color = "grey70") +
+  #geom_sf_label(aes(label = porc_muerte_lab),
+    #fill = "white", alpha = 0.5,
+    #size = 3,
+    #label.size = 0
+  #) +
+  scale_fill_gradientn(
+    colors = hcl.colors(10, "Greens", rev = TRUE),
+    n.breaks = 6,
+    limits = c(0, 130/100000),
+    #labels = function(x) {
+      #sprintf("%1.0f", x)
+    #},
+    labels = function(x) {
+      sprintf("%1.0f",100000 * x)
+    },
+    guide = guide_legend(title = "Ratio muertes")
+  ) +
+   labs(
+    #fill = "Habitantes",
+    title = "Defunciones en España cada 100.000 habitantes en Abril",
+    subtitle = "Datos INE (2020)"
+  ) +
+  geom_sf(data = can_prov) +
+  geom_sf(data = Can) +
+  #theme_light() +
+  theme_void() +
+  theme(legend.position = c(0.1, 0.6),
+    #plot.title = element_text(hjust = .6),
+    #plot.subtitle = element_text(hjust = .6)
+    )
+
+```
