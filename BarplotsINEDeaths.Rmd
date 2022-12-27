@@ -64,6 +64,7 @@ ggplot(data = data.frame(plotmonth), mapping = aes(x=Month,y=Deaths))+
   theme(axis.text.x = element_text(angle=45, hjust=1, size = 12),
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=14))
+ggsave(filename = "deaths_month.tiff", width = 15, height = 10, device='tiff', dpi=700)
 ```
 
 ## 2. Month Sex Deaths Bar Chart
@@ -116,6 +117,8 @@ monthsex <- ggplot(data = df, mapping = aes(x=Month,y=Deaths))+
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=14))
 monthsex  + scale_fill_manual("legend", values = c("Female" = "#F96666", "Male" = "#7895B2"))
+
+ggsave(filename = "deaths_pmonth_sex.tiff", width = 15, height = 10, device='tiff', dpi=700)
 ```
 
 ## 3. Distribution of Deaths per month boxplot
@@ -164,6 +167,7 @@ monthsex <- ggplot(data = df, mapping = aes(x=Month,y=Deaths))+
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=14))
 monthsex
+ggsave(filename = "death_distribution_month.tiff", width = 15, height = 10, device='tiff', dpi=700)
 ```
 
 ## Plotting
@@ -179,6 +183,7 @@ monthsex <- ggplot(data = df, mapping = aes(x=Province,y=Deaths))+
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=14))
 monthsex
+ggsave(filename = "death_distribution_province.tiff", width = 15, height = 10, device='tiff', dpi=700)
 ```
 
 ## Grouping by Autonomic Community
@@ -233,6 +238,7 @@ monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=Deaths))+
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=14))
 monthccaa
+ggsave(filename = "death_distribution_ccaa.tiff", width = 15, height = 10, device='tiff', dpi=700)
 ```
 
 ```{r 6 pressure, echo=FALSE}
@@ -254,4 +260,5 @@ monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=Deaths))+
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=14))
 monthccaa
+ggsave(filename = "death_sum_ccaa.tiff", width = 15, height = 10, device='tiff', dpi=700)
 ```
