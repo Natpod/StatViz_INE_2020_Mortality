@@ -1,0 +1,75 @@
+---
+title: "Mortality_per_Year"
+output: html_document
+date: "2022-12-27"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#Import libraries----------------------------------------------
+library(ggplot2)
+library(dplyr)
+library(stringr)
+```
+
+## Import data (Mortality per Year, Age and Sex)
+
+```{r}
+mortalityYear_df <- read.csv("mortalityRate.csv", header=TRUE, sep=';')
+head(mortalityYear_df)
+```
+
+## Data preprocessing
+
+```{r}
+#convert numbers into english format 
+mortalityYear_df$Total <- as.numeric(str_replace(mortalityYear_df$Total,",","."))
+mortalityYear_df$Edad <- as.numeric(mortalityYear_df$Edad)
+
+#remove rows with NA values
+mortalityYear_df <- na.omit(mortalityYear_df)
+
+#translate Sex values to English
+colnames(mortalityYear_df)[2] <- 'Sex'
+
+mortalityYear_df <- mortalityYear_df %>%
+  mutate(Sex = ifelse(Sex == 'Ambos sexos', "Both",
+                      ifelse(Sex == 'Hombres','Male','Female')))
+
+head(mortalityYear_df)
+```
+
+## Plot mortality rate per age (2020)
+
+````{r}
+plot_mortalityAge <- mortalityYear_df[mortalityYear_df$Funciones=='Tasa de mortalidad'
+                                      & mortalityYear_df$Sex!='Both'
+                                      & mortalityYear_df$Periodo=='2020',] %>%
+  ggplot( aes(x=Edad, y=Total, group=Sex, color=Sex)) +
+  geom_line(size=1.25) +
+  scale_y_continuous(trans = 'log2', breaks=c(0.01, 0.1, 1, 10, 100, 1000)) +
+  xlab("Age") + ylab("Mortality rate (per 1000 people)") +
+  ggtitle("Mortality rate per age in Spain (2020)")
+
+plot_mortalityAge + theme_bw()
+````
+## Import data (Crude mortality per Year)
+
+```{r}
+crudeMortality_df <- read.csv("crudeMortality.csv", header=TRUE, sep=';')
+crudeMortality_df$Total <- as.numeric(str_replace(crudeMortality_df$Total,",","."))
+head(crudeMortality_df)
+```
+## Plot crude mortality rate per year
+
+````{r}
+plot_crudeMort <- crudeMortality_df %>%
+  ggplot( aes(x=Periodo, y=Total)) +
+  geom_line(size=1.25) +
+  scale_y_continuous(limits=c(0,10.5)) +
+  xlab("Year") + ylab("Crude death rate (per 1000 people)") +
+  ggtitle("Evolution of crude death rate in Spain")
+
+plot_crudeMort + theme_bw()
+````
