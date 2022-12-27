@@ -1,0 +1,255 @@
+---
+title: "BarplotsINEMortalitySex"
+output: html_document
+date: '2022-12-27'
+---
+
+```{r setup, include=FALSE}
+#--------------------- Import libraries
+library(tidyr)
+library(ggplot2)
+library(reshape2)
+library(dplyr)
+```
+
+## Import data
+
+*Data Source*:
+
+```{r cars}
+data<-read.csv("Provincias_datos.csv", sep = ";")
+# Glimpse of the dataset 
+head(data)
+```
+
+## 1. Month Deaths Bar Chart
+
+## Data preprocessing
+
+Taking total cases, and month data, dropping missing values and translating month labels
+
+```{r dp1}
+datatotalmonth = data[which(data["Lugar.de.residencia..capitales."]=="Total"),]
+datatotalmonth = datatotalmonth[which(data["Mes.de.la.defunción"]!="Total"),]
+datatotalmonth = datatotalmonth[which(data["Sexo"]=="Total"),]
+datatotalmonth = datatotalmonth %>% drop_na()
+```
+
+Subsetting and reformatting final dataframe
+
+```{r sbs1}
+datatotalmonth = datatotalmonth[,c("Mes.de.la.defunción", "Total")]
+
+levels_order <-  c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+datatotalmonth[,"Mes.de.la.defunción"] <- levels_order
+
+# Necessary to reformat for ggplot
+plotmonth = melt(datatotalmonth)
+colnames(plotmonth) = c("Month", "Stratification", "Deaths")
+```
+
+## Plotting
+
+```{r pressure, echo=FALSE}
+#---------------------- Month plot
+
+
+ggplot(data = data.frame(plotmonth), mapping = aes(x=Month,y=Deaths))+
+  scale_x_discrete(limits = levels_order)+
+  geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = .3)+
+  geom_path(aes(x = Month, y = Deaths), size = 1.5, color="red", group = 1, linewidth = .5)+
+  ylab("Deaths")+
+  ggtitle("Deaths per month in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=14))
+```
+
+## 2. Month Sex Deaths Bar Chart
+
+## Data preprocessing
+
+Taking total cases, sex data and month data, dropping missing values and translating month and sex labels
+
+```{r dp2}
+datatotalmonthsex = data[which(data["Lugar.de.residencia..capitales."]=="Total"),]
+datatotalmonthsex = datatotalmonthsex[which(data["Mes.de.la.defunción"]!="Total"),]
+datatotalmonthsex = datatotalmonthsex %>% drop_na()
+```
+
+Subsetting and reformatting final dataframe
+
+```{r sbs2}
+datatotalmonthsex = datatotalmonthsex[,c("Mes.de.la.defunción", "Sexo","Total")]
+
+# This time for translation of labels it is necessary to replicate the sex for each of the three sex labels per  instance
+datatotalmonthsex["Sexo"] <- rep_len(c("Total", "Male", "Female"),3)
+
+# This time for translation of labels it is necessary to replicate the months for each of the three sex labels per instance
+levels_order <-  c(rep_len("January",3), rep_len("February",3), rep_len("March",3), rep_len("April",3), 
+                   rep_len("May",3), rep_len("June",3), rep_len("July",3), rep_len("August",3), 
+                   rep_len("September",3), rep_len("October",3), rep_len("November",3), rep_len("December",3))
+datatotalmonthsex[,"Mes.de.la.defunción"] <- levels_order
+
+# Necessary to reformat for ggplot
+plotmonthsex = melt(datatotalmonthsex)
+colnames(plotmonthsex) = c("Month", "Sex", "Stratification", "Deaths")
+df=data.frame(plotmonthsex)
+```
+
+## Plotting
+
+```{r 2 pressure, echo=FALSE}
+#---------------------- Sex-Month plot
+
+
+monthsex <- ggplot(data = df, mapping = aes(x=Month,y=Deaths))+
+  scale_x_discrete(limits = levels_order)+
+  geom_bar(data=df[df$Sex=="Total", ], stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 1.2, group="Total")+
+  geom_point(data=df[df$Sex!="Total", ],aes(color=Sex, x = as.factor(Month), y = Deaths, group=Sex), size = 2.5)+
+  geom_path(data=df[df$Sex!="Total", ], aes(color=Sex, x = as.factor(Month), y = Deaths, group=Sex), size = 1.5, linewidth = .8)+
+  ylab("Deaths")+
+  ggtitle("Deaths per month in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=14))
+monthsex  + scale_fill_manual("legend", values = c("Female" = "#F96666", "Male" = "#7895B2"))
+```
+
+## 3. Distribution of Deaths per month boxplot
+
+## Data preprocessing
+
+Taking total cases, sex data and month data, dropping missing values and translating month and sex labels
+
+```{r dp3}
+datatotal = data[which(data["Lugar.de.residencia..capitales."]!="Total"),]
+datatotal = datatotal[which(data["Mes.de.la.defunción"]!="Total"),]
+datatotal = datatotal[which(data["Sexo"]=="Total"),]
+datatotal = datatotal %>% drop_na()
+```
+
+Subsetting and reformatting final dataframe
+
+```{r sbs2}
+datatotal = datatotal[,c("Lugar.de.residencia..capitales.", "Mes.de.la.defunción", "Total")]
+
+# Gets number of provinces in the dataset for translation of month values through repetition
+numprov <- length(unique(datatotal["Lugar.de.residencia..capitales."])[,1])
+
+# This time for translation of labels it is necessary to replicate the months for each of the three sex labels per instance
+levels_order <-  rep_len(c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"), numprov)
+datatotal[,"Mes.de.la.defunción"] <- levels_order
+
+# Necessary to reformat for ggplot
+plottotalbp = melt(datatotal)
+colnames(plottotalbp) = c("Province", "Month", "Stratification","Deaths")
+df=data.frame(plottotalbp)
+```
+
+## Plotting
+
+```{r 3 pressure, echo=FALSE}
+#---------------------- Sex-Month plot
+
+
+monthsex <- ggplot(data = df, mapping = aes(x=Month,y=Deaths))+
+  scale_x_discrete(limits = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"))+
+  geom_boxplot()+
+  ggtitle("Deaths per month in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=14))
+monthsex
+```
+
+## Plotting
+
+```{r 4 pressure, echo=FALSE}
+#---------------------- Sex-Month plot
+
+monthsex <- ggplot(data = df, mapping = aes(x=Province,y=Deaths))+
+  geom_boxplot()+
+  ggtitle("Deaths per province in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 6),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=14))
+monthsex
+```
+## Grouping by Autonomic Community
+
+```{r impccaa}
+
+map_ccaa_prov <- read.csv("ccaa_provincia.csv")
+colnames(map_ccaa_prov) <- c("CCAA","Lugar.de.residencia..capitales.")
+dataccaa <- merge(data,map_ccaa_prov,by="Lugar.de.residencia..capitales.")
+
+```
+## Data preprocessing
+
+Taking total cases, sex data and month data, dropping missing values and translating month and sex labels
+
+```{r dp4}
+dataccaa = dataccaa[which(data["Lugar.de.residencia..capitales."]!="Total"),]
+dataccaa = dataccaa[which(data["Mes.de.la.defunción"]!="Total"),]
+dataccaa = dataccaa[which(data["Sexo"]=="Total"),]
+dataccaa = dataccaa %>% drop_na()
+```
+
+Subsetting and reformatting final dataframe
+
+```{r sbs4}
+dataccaa = dataccaa[,c("CCAA", "Mes.de.la.defunción", "Total")]
+
+# Gets number of provinces in the dataset for translation of month values through repetition
+dataccaa <- length(unique(datatotal["Lugar.de.residencia..capitales."])[,1])
+
+# This time for translation of labels it is necessary to replicate the months for each of the three sex labels per instance
+levels_order <-  rep_len(c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"), numprov)
+datatotal[,"Mes.de.la.defunción"] <- levels_order
+
+# Necessary to reformat for ggplot
+plotccaabp = melt(dataccaa)
+colnames(plotccaabp) = c("CCAA", "Month", "Stratification","Deaths")
+df=data.frame(plotccaabp)
+```
+## Plotting
+
+```{r 5 pressure, echo=FALSE}
+#---------------------- Sex-Month plot
+
+monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=Deaths))+
+  geom_boxplot()+
+  ggtitle("Deaths per CCAA in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 6),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=14))
+monthccaa
+```
+
+
+```{r 5 pressure, echo=FALSE}
+dataaccumulativeccaa = dataccaa %>% group_by(CCAA) %>%
+  summarise(sum.Total = sum(Total))
+
+# Necessary to reformat for ggplot
+plotccaa_acc = melt(dataaccumulativeccaa)
+colnames(plotccaa_acc) = c("CCAA", "Strat:Agg_Funct", "Deaths")
+df=data.frame(plotccaa_acc)
+
+#---------------------- Sex-Month plot
+
+monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=Deaths))+
+  geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 0.7)+
+  ggtitle("Deaths per CCAA in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 6),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=14))
+monthccaa
+```
