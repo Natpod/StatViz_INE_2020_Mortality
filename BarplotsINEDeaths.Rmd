@@ -194,6 +194,44 @@ monthsex <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=Deaths))+
 monthsex
 ggsave(filename = "figures/mortality_distribution_province.png", width = 20, height = 5, device='png', dpi=700)
 ```
+```{r 69 pressure, echo=FALSE}
+dataaccumulativeprov = datatotal %>% group_by(Lugar) %>%
+  summarise(sum.Total = sum(Total))
+
+
+
+# Necessary to reformat for ggplot
+plotprov_acc = melt(dataaccumulativeprov)
+colnames(plotprov_acc) = c("Province", "Strat:Agg_Funct", "Deaths")
+df=data.frame(plotprov_acc)
+
+
+ # Order boxes by median
+group_ordered <- with(df,                      
+                      reorder(Province,
+                              Deaths,
+                              median))
+
+# Create data with reordered group levels
+datatotal_ordered <- df                             
+datatotal_ordered$group <- factor(datatotal_ordered$Province,
+                             levels = levels(group_ordered))
+
+
+#---------------------- plot
+
+monthccaa <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=Deaths))+
+  geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 0.6)+
+  ylab("Crude Mortality")+
+  xlab("Province")+
+    ggtitle("Crude Mortality per province in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 11),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=12))
+monthccaa
+ggsave(filename = "figures/mortality_sum_province.png", width = 16, height = 7, device='png', dpi=700)
+```
 
 ## 5. Grouping by Autonomic Community
 
@@ -300,9 +338,9 @@ monthccaa <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=Deaths))+
   theme(plot.title = element_text(size=16))+
   theme(axis.text.x = element_text(angle=45, hjust=1, size = 11),
         axis.text.y = element_text(size = 12),
-        axis.title=element_text(size=10))
+        axis.title=element_text(size=12))
 monthccaa
-ggsave(filename = "figures/mortality_sum_ccaa.png", width = 15, height = 7, device='png', dpi=700)
+ggsave(filename = "figures/mortality_sum_ccaa.png", width = 16, height = 7, device='png', dpi=700)
 ```
 
 # Death Rate Per 100,000 inhabitants visualization
@@ -500,7 +538,57 @@ monthsex <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=DeathRate))
 monthsex
 ggsave(filename = "figures/deathR_distribution_province.png", width = 20, height = 5, device='png', dpi=700)
 ```
+```{r 59 pressure, echo=FALSE}
+datatotal <- data[which(data["Sexo"]=="Total"),]
 
+# Group by Province + sum deaths
+dataaccumulativeprov = datatotal %>% group_by(Lugar) %>%
+  summarise(sum.Total = sum(Total))
+
+datapobprov = dataDR %>% group_by(Lugar) %>%
+  summarise(sum.pob19 = sum(pob19))
+
+dataDRplot <- merge(datapobprov,dataaccumulativeprov,by="Lugar")
+dataDRplot$DR <- ( dataDRplot$sum.Total / dataDRplot$sum.pob19 ) * 100000
+dataDRplot <- dataDRplot[,c('Lugar','DR')]
+
+
+
+# Necessary to reformat for ggplot
+plotprov_acc = melt(dataDRplot)
+colnames(plotprov_acc) = c("Province", "Strat:Agg_Funct", "DeathRate")
+df=data.frame(plotprov_acc)
+
+
+ # Order boxes by median
+group_ordered <- with(df,                      
+                      reorder(Province,
+                              DeathRate,
+                              median))
+
+# Create data with reordered group levels
+datatotal_ordered <- df                             
+datatotal_ordered$group <- factor(datatotal_ordered$Province,
+                             levels = levels(group_ordered))
+```
+
+
+```{r 49 pressure, echo=FALSE}
+
+#---------------------- plot
+
+monthccaa <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=DeathRate))+
+  geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 0.6)+
+  ylab("Death Rate (per 100,000 inhabitants)")+
+  xlab("Province")+
+    ggtitle("Death Rate per province in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 11),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=12))
+monthccaa
+ggsave(filename = "figures/deathR_sum_province.png", width = 16, height = 7, device='png', dpi=700)
+```
 ## 5. Grouping by Autonomic Community
 
 ```{r impccaa2}
@@ -615,16 +703,16 @@ datatotal_ordered$group <- factor(datatotal_ordered$CCAA,
 #---------------------- Sex-Month plot
 
 monthccaa <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=DeathRate))+
-  geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 0.7)+
+  geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 0.6)+
     ggtitle("Death Rate per A.C. in 2020")+
   ylab("Death Rate (per 100.000 inhabitants)")+
   xlab("Autonomous Community")+
   theme(plot.title = element_text(size=16))+
   theme(axis.text.x = element_text(angle=45, hjust=1, size = 11),
         axis.text.y = element_text(size = 12),
-        axis.title=element_text(size=9))
+        axis.title=element_text(size=12))
 monthccaa
-ggsave(filename = "figures/deathR_sum_ccaa.png", width = 15, height = 7, device='png', dpi=700)
+ggsave(filename = "figures/deathR_sum_ccaa.png", width = 16, height = 7, device='png', dpi=700)
 ```
 ```{r sbs77}
 
