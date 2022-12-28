@@ -22,6 +22,8 @@ data<-read.csv("Provincias_datos.csv", sep = ",")
 head(data)
 ```
 
+# Crude Mortality Rate Visualizations
+
 ## 1. Month Deaths Bar Chart
 
 ## Data preprocessing
@@ -51,9 +53,6 @@ colnames(plotmonth) = c("Month", "Stratification", "Deaths")
 ## Plotting
 
 ```{r pressure, echo=FALSE}
-#---------------------- Month plot
-
-
 ggplot(data = data.frame(plotmonth), mapping = aes(x=Month,y=Deaths))+
   scale_x_discrete(limits = levels_order)+
   geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = .3)+
@@ -102,9 +101,6 @@ df=data.frame(plotmonthsex)
 ## Plotting
 
 ```{r 2 pressure, echo=FALSE}
-#---------------------- Sex-Month plot
-
-
 monthsex <- ggplot(data = df, mapping = aes(x=Month,y=Deaths))+
   scale_x_discrete(limits = levels_order)+
   geom_bar(data=df[df$Sex=="Total", ], stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 1.2)+
@@ -155,9 +151,6 @@ df=data.frame(plottotalbp)
 ## Plotting
 
 ```{r 3 pressure, echo=FALSE}
-#---------------------- Sex-Month plot
-
-
 monthsex <- ggplot(data = df, mapping = aes(x=Month,y=Deaths))+
   scale_x_discrete(limits = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"))+
   geom_boxplot()+
@@ -170,25 +163,39 @@ monthsex <- ggplot(data = df, mapping = aes(x=Month,y=Deaths))+
 monthsex
 ggsave(filename = "figures/mortality_distribution_month.png", width = 15, height = 5, device='png', dpi=700)
 ```
+## 4. Plotting by province with ordered medians
+```{r sbs99}
 
+ # Order boxes by median
+group_ordered <- with(df,                      
+                      reorder(Province,
+                              Deaths,
+                              median))
+
+# Create data with reordered group levels
+datatotal_ordered <- df                             
+datatotal_ordered$group <- factor(datatotal_ordered$Province,
+                             levels = levels(group_ordered))
+
+
+```
 ## Plotting
 
 ```{r 4 pressure, echo=FALSE}
-#---------------------- Sex-Month plot
-
-monthsex <- ggplot(data = df, mapping = aes(x=Province,y=Deaths))+
+monthsex <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=Deaths))+
   geom_boxplot()+
+  xlab("Province")+
   ylab("Crude Mortality")+
   ggtitle("Crude Mortality per province in 2020")+
   theme(plot.title = element_text(size=16))+
-  theme(axis.text.x = element_text(angle=45, hjust=1, size = 6),
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 11),
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=10))
 monthsex
 ggsave(filename = "figures/mortality_distribution_province.png", width = 20, height = 5, device='png', dpi=700)
 ```
 
-## Grouping by Autonomic Community
+## 5. Grouping by Autonomic Community
 
 ```{r impccaa}
 
@@ -226,19 +233,32 @@ plotccaabp = melt(dataccaa)
 colnames(plotccaabp) = c("CCAA", "Month","Stratification","Deaths")
 df=data.frame(plotccaabp)
 ```
+```{r sbs31}
+
+ # Order boxes by median
+group_ordered <- with(df,                      
+                      reorder(CCAA,
+                              Deaths,
+                              median))
+
+# Create data with reordered group levels
+datatotal_ordered <- df                             
+datatotal_ordered$group <- factor(datatotal_ordered$CCAA,
+                             levels = levels(group_ordered))
+
+
+```
 
 ## Plotting
 
 ```{r 5 pressure, echo=FALSE}
-#---------------------- Sex-Month plot
-
-monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=Deaths))+
+monthccaa <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=Deaths))+
   geom_boxplot()+
   ylab("Crude Mortality")+
   xlab("Autonomous Community")+
-  ggtitle("Crude Mortality per CCAA in 2020")+
+  ggtitle("Crude Mortality per A.C. in 2020")+
   theme(plot.title = element_text(size=16))+
-  theme(axis.text.x = element_text(angle=45, hjust=1, size = 9),
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 11),
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=10))
 monthccaa
@@ -254,34 +274,51 @@ plotccaa_acc = melt(dataaccumulativeccaa)
 colnames(plotccaa_acc) = c("CCAA", "Strat:Agg_Funct", "Deaths")
 df=data.frame(plotccaa_acc)
 
-#---------------------- Sex-Month plot
 
-monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=Deaths))+
-  geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 0.7)+
+ # Order boxes by median
+group_ordered <- with(df,                      
+                      reorder(CCAA,
+                              Deaths,
+                              median))
+
+# Create data with reordered group levels
+datatotal_ordered <- df                             
+datatotal_ordered$group <- factor(datatotal_ordered$CCAA,
+                             levels = levels(group_ordered))
+
+
+#---------------------- plot
+
+monthccaa <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=Deaths))+
+  geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 0.6)+
   ylab("Crude Mortality")+
   xlab("Autonomous Community")+
-    ggtitle("Crude Mortality per CCAA in 2020")+
+    ggtitle("Crude Mortality per A.C. in 2020")+
   theme(plot.title = element_text(size=16))+
-  theme(axis.text.x = element_text(angle=45, hjust=1, size = 8),
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 11),
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=10))
 monthccaa
 ggsave(filename = "figures/mortality_sum_ccaa.png", width = 15, height = 7, device='png', dpi=700)
 ```
 
-## Tasa de defunción por provincia en 2020
+# Death Rate Per 100,000 inhabitants visualization
+
+In reference to the population of provinces in the end of 2019
 
 ```{r}
 death_census <- read.csv("Death_Census_Perc.csv")
 
+# Merging on province to get populations of men, women and total populations in 2019
 datapob19 <- death_census[, c('Lugar','men','women','pob19')]
 dataDR <- merge(data,datapob19,by="Lugar")
 
 ```
 
-## Cálculo Death Rate por mes y provincia
+Calculating Death Rate per month and province
 
 ```{r}
+# Calculating Death Rate DR per population group
 dataDR$DR <- NULL
 
 # Creating variables indexing rows by stratification population (Total,men,women)
@@ -294,6 +331,10 @@ dataDR[BOOLMEN,'DR'] <- ( dataDR[BOOLMEN,'Total'] / dataDR[BOOLMEN, 'men'] ) * 1
 BOOLWOMEN <- which(dataDR['Sexo']=='Mujeres')
 dataDR[BOOLWOMEN,'DR'] <- ( dataDR[BOOLWOMEN,'Total'] / dataDR[BOOLWOMEN,'women']) * 100000
 ```
+
+## 1. Month Death Rate Bar chart
+
+## Data preprocessing
 
 ```{r}
 
@@ -316,9 +357,6 @@ colnames(plotmonth) = c("Month", "Stratification", "DeathRate")
 ## Plotting
 
 ```{r 10 pressure, echo=FALSE}
-#---------------------- Month plot
-
-
 ggplot(data = data.frame(plotmonth), mapping = aes(x=Month,y=DeathRate))+
   scale_x_discrete(limits = levels_order)+
   geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = .3)+
@@ -367,9 +405,6 @@ df=data.frame(plotmonthsex)
 ## Plotting
 
 ```{r 23 pressure, echo=FALSE}
-#---------------------- Sex-Month plot
-
-
 monthsex <- ggplot(data = df, mapping = aes(x=Month,y=DeathRate))+
   scale_x_discrete(limits = levels_order)+
   geom_bar(data=df[df$Sex=="Total", ], stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 1.2)+
@@ -420,9 +455,6 @@ df=data.frame(plottotalbp)
 ## Plotting
 
 ```{r 13 pressure, echo=FALSE}
-#---------------------- Sex-Month plot
-
-
 monthsex <- ggplot(data = df, mapping = aes(x=Month,y=DeathRate))+
   scale_x_discrete(limits = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"))+
   geom_boxplot()+
@@ -435,25 +467,38 @@ monthsex <- ggplot(data = df, mapping = aes(x=Month,y=DeathRate))+
 monthsex
 ggsave(filename = "figures/deathR_distribution_month.png", width = 15, height = 5, device='png', dpi=700)
 ```
+## 4. Plotting by province with ordered medians
+```{r sbs39}
 
+ # Order boxes by median
+group_ordered <- with(df,                      
+                      reorder(Province,
+                              DeathRate,
+                              median))
+
+# Create data with reordered group levels
+datatotal_ordered <- df                             
+datatotal_ordered$group <- factor(datatotal_ordered$Province,
+                             levels = levels(group_ordered))
+
+
+```
 ## Plotting
 
 ```{r 14 pressure, echo=FALSE}
-#---------------------- Sex-Month plot
-
-monthsex <- ggplot(data = df, mapping = aes(x=Province,y=DeathRate))+
+monthsex <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=DeathRate))+
   geom_boxplot()+
   ylab("Death Rate (per 100.000 inhabitants)")+
   ggtitle("Death Rate per province in 2020")+
   theme(plot.title = element_text(size=16))+
-  theme(axis.text.x = element_text(angle=45, hjust=1, size = 6),
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 11),
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=9))
 monthsex
 ggsave(filename = "figures/deathR_distribution_province.png", width = 20, height = 5, device='png', dpi=700)
 ```
 
-## Grouping by Autonomic Community
+## 5. Grouping by Autonomic Community
 
 ```{r impccaa2}
 
@@ -491,17 +536,31 @@ plotccaabp = melt(dataccaa)
 colnames(plotccaabp) = c("CCAA", "Month","Stratification","DeathRate")
 df=data.frame(plotccaabp)
 ```
+```{r sbs38}
 
+ # Order boxes by median
+group_ordered <- with(df,                      
+                      reorder(CCAA,
+                              DeathRate,
+                              median))
+
+# Create data with reordered group levels
+datatotal_ordered <- df                             
+datatotal_ordered$group <- factor(datatotal_ordered$CCAA,
+                             levels = levels(group_ordered))
+
+
+```
 ## Plotting
 
 ```{r 16 pressure, echo=FALSE}
-monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=DeathRate))+
+monthccaa <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=DeathRate))+
   geom_boxplot()+
-  ggtitle("Death Rate per CCAA in 2020")+
+  ggtitle("Death Rate per A.C. in 2020")+
   ylab("Death Rate (per 100.000 inhabitants)")+
   xlab("Autonomous Community")+
   theme(plot.title = element_text(size=16))+
-  theme(axis.text.x = element_text(angle=45, hjust=1, size = 9),
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 11),
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=9))
 monthccaa
@@ -531,15 +590,27 @@ plotccaa_acc = melt(dataDR)
 colnames(plotccaa_acc) = c("CCAA", "Strat:Agg_Funct","DeathRate")
 df=data.frame(plotccaa_acc)
 
+
+ # Order boxes by median
+group_ordered <- with(df,                      
+                      reorder(CCAA,
+                              DeathRate,
+                              median))
+
+# Create data with reordered group levels
+datatotal_ordered <- df                             
+datatotal_ordered$group <- factor(datatotal_ordered$CCAA,
+                             levels = levels(group_ordered))
+
 #---------------------- Sex-Month plot
 
-monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=DeathRate))+
+monthccaa <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=DeathRate))+
   geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 0.7)+
-    ggtitle("Death Rate per CCAA in 2020")+
+    ggtitle("Death Rate per A.C. in 2020")+
   ylab("Death Rate (per 100.000 inhabitants)")+
   xlab("Autonomous Community")+
   theme(plot.title = element_text(size=16))+
-  theme(axis.text.x = element_text(angle=45, hjust=1, size = 8),
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 11),
         axis.text.y = element_text(size = 12),
         axis.title=element_text(size=9))
 monthccaa
