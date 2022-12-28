@@ -169,7 +169,7 @@ ggplot(esp_prov) +
 ggsave(file="./populationSpain.png", width = 12, height = 6, device='png', dpi=700)
 
 ```
-## "Mortality rate in Spain (per 100.000 population) in January 2020"
+## "Mortality rate in Spain (per 100.000 population) in January 2020
 ```{r}
 # Getting total number of deaths by province in January
 enero <- mydata[mydata$Mes == "Enero",]
@@ -222,7 +222,7 @@ ggplot(esp_prov) +
 ggsave(file="./mortalityJanuary.png", width = 12, height = 6, device='png', dpi=700)
 
 ```
-## Mortality rate in Spain (per 100.000 population) in April 2020"
+## Mortality rate in Spain (per 100.000 population) in April 2020
 ```{r}
 # Getting total number of deaths by province in April
 abril <- mydata[mydata$Mes == "Abril",]
@@ -278,3 +278,80 @@ ggplot(esp_prov) +
 ggsave(file="./mortalityApril.png", width = 12, height = 6, device='png', dpi=700)
 
 ```
+
+## Mortality in Spain per Autonomous Community
+```{r}
+ccaa_mort <-read.csv("~/Desktop/estadistica/statistics2/CCAA_DR_Mortality_Population.csv")
+
+codauto <- esp_dict_region_code(ccaa_mort$CCAA, origin = "text", destination = "codauto")
+ccaa_mort$codauto <- codauto
+ccaa_mort<- ccaa_mort[order(ccaa_mort$codauto),] # order by cpro
+ccaa_mort
+```
+### Mortality rate per Autonomous Comunity
+```{r}
+CCAA <- esp_get_ccaa()
+CCAA <- merge(CCAA, ccaa_mort)
+Can <- esp_get_can_box()
+can_prov <- esp_get_can_provinces()
+
+ggplot(CCAA) +
+  geom_sf(aes(fill =DR),  # coloring provinces by death rate
+    color = "grey70",
+    linewidth = .3, 
+  ) +
+  geom_sf(data = Can, color = "grey70") +
+  scale_fill_gradientn(
+    colors = hcl.colors(10, "Reds", rev = TRUE), # defining gradient of colors
+    n.breaks = 10,
+    #limits = c(0, 130/100000),
+    labels = function(x) {   # printing formatted labels
+      sprintf("%1.0f", x)
+    },
+    guide = guide_legend(title = "Mortality rate")
+  ) +
+   labs(    # lables and titles
+    title = "Mortality rate in Spain (per 100.000 population) in 2020 per A.C.",
+    subtitle = "INE Data (2020)"
+  ) +
+  geom_sf(data = can_prov) +
+  geom_sf(data = Can) +
+  theme_void() +
+  theme(legend.position = c(0.1, 0.6))
+ggsave(file="./mortalityrateSpainccaa.png", width = 12, height = 6, device='png', dpi=700)
+
+```
+### Total number of deaths per Autonomous Community
+```{r}
+CCAA <- esp_get_ccaa()
+CCAA <- merge(CCAA, ccaa_mort)
+Can <- esp_get_can_box()
+can_prov <- esp_get_can_provinces()
+
+ggplot(CCAA) +
+  geom_sf(aes(fill = sum.Total),  # coloring provinces by death rate
+    color = "grey70",
+    linewidth = .3, 
+  ) +
+  geom_sf(data = Can, color = "grey70") +
+  scale_fill_gradientn(
+    colors = hcl.colors(10, "Reds", rev = TRUE), # defining gradient of colors
+    n.breaks = 10,
+    #limits = c(0, 130/100000),
+    labels = function(x) {   # printing formatted labels
+      sprintf("%1.0f", x)
+    },
+    guide = guide_legend(title = "Number of deaths")
+  ) +
+   labs(    # lables and titles
+    title = "Total Number of deaths in Spain per A.C.",
+    subtitle = "INE Data (2020)"
+  ) +
+  geom_sf(data = can_prov) +
+  geom_sf(data = Can) +
+  theme_void() +
+  theme(legend.position = c(0.1, 0.6))
+ggsave(file="./totaldeathSpainccaa.png", width = 12, height = 6, device='png', dpi=700)
+
+```
+
