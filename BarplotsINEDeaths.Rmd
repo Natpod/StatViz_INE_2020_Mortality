@@ -269,6 +269,9 @@ ggsave(filename = "figures/mortality_distribution_ccaa.png", width = 15, height 
 dataaccumulativeccaa = dataccaa %>% group_by(CCAA) %>%
   summarise(sum.Total = sum(Total))
 
+# save info to write to csv later
+dataCCAAMort<-dataaccumulativeccaa
+
 # Necessary to reformat for ggplot
 plotccaa_acc = melt(dataaccumulativeccaa)
 colnames(plotccaa_acc) = c("CCAA", "Strat:Agg_Funct", "Deaths")
@@ -566,8 +569,8 @@ monthccaa <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=DeathRate)
 monthccaa
 ggsave(filename = "figures/deathR_distribution_ccaa.png", width = 15, height = 5, device='png', dpi=700)
 ```
+```{r sbs88}
 
-```{r 17 pressure, echo=FALSE}
 datatotal <- data[which(data["Sexo"]=="Total"),]
 dataccaa <- merge(datatotal,map_ccaa_prov,by="Lugar")
 
@@ -591,7 +594,14 @@ colnames(plotccaa_acc) = c("CCAA", "Strat:Agg_Funct","DeathRate")
 df=data.frame(plotccaa_acc)
 
 
- # Order boxes by median
+# save info to write to csv later
+dataCCAADR<-dataDR
+
+
+```
+
+```{r 17 pressure, echo=FALSE}
+# Order boxes by median
 group_ordered <- with(df,                      
                       reorder(CCAA,
                               DeathRate,
@@ -615,4 +625,11 @@ monthccaa <- ggplot(data = datatotal_ordered, mapping = aes(x=group,y=DeathRate)
         axis.title=element_text(size=9))
 monthccaa
 ggsave(filename = "figures/deathR_sum_ccaa.png", width = 15, height = 7, device='png', dpi=700)
+```
+```{r sbs77}
+
+# saved acc data groupby CCAA
+CCAAdata <- merge(dataCCAADR, dataCCAAMort, by='CCAA')
+write.csv(CCAAdata, "CCAA_DR_Mortality_Population.csv")
+
 ```
