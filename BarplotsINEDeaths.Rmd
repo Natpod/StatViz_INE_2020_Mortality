@@ -58,13 +58,13 @@ ggplot(data = data.frame(plotmonth), mapping = aes(x=Month,y=Deaths))+
   scale_x_discrete(limits = levels_order)+
   geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = .3)+
   geom_path(aes(x = Month, y = Deaths), size = 1.5, color="red", group = 1, linewidth = .5)+
-  ylab("Deaths")+
-  ggtitle("Deaths per month in 2020")+
+  ylab("Crude Mortality")+
+  ggtitle("Crude mortality per month in 2020")+
   theme(plot.title = element_text(size=16))+
   theme(axis.text.x = element_text(angle=45, hjust=1, size = 12),
-        axis.text.y = element_text(size = 12),
+        axis.text.y = element_text(size = 10),
         axis.title=element_text(size=14))
-ggsave(filename = "deaths_month.tiff", width = 15, height = 10, device='tiff', dpi=700)
+ggsave(filename = "figures/mortality_month.png", width = 15, height = 5, device='png', dpi=700)
 ```
 
 ## 2. Month Sex Deaths Bar Chart
@@ -110,15 +110,15 @@ monthsex <- ggplot(data = df, mapping = aes(x=Month,y=Deaths))+
   geom_bar(data=df[df$Sex=="Total", ], stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 1.2)+
   geom_point(data=df[df$Sex!="Total", ],aes(color=Sex, x = as.factor(Month), y = Deaths, group=Sex), size = 2.5)+
   geom_path(data=df[df$Sex!="Total", ], aes(color=Sex, x = as.factor(Month), y = Deaths, group=Sex), size = 1.5, linewidth = .8)+
-  ylab("Deaths")+
-  ggtitle("Deaths per month in 2020")+
+  ylab("Crude Mortality")+
+  ggtitle("Crude Mortality per month in 2020")+
   theme(plot.title = element_text(size=16))+
   theme(axis.text.x = element_text(angle=45, hjust=1, size = 12),
         axis.text.y = element_text(size = 12),
-        axis.title=element_text(size=14))
+        axis.title=element_text(size=12))
 monthsex  + scale_fill_manual("legend", values = c("Female" = "#F96666", "Male" = "#7895B2"))
 
-ggsave(filename = "deaths_pmonth_sex.tiff", width = 15, height = 10, device='tiff', dpi=700)
+ggsave(filename = "figures/mortality_pmonth_sex.png", width = 15, height = 5, device='png', dpi=700)
 ```
 
 ## 3. Distribution of Deaths per month boxplot
@@ -161,13 +161,14 @@ df=data.frame(plottotalbp)
 monthsex <- ggplot(data = df, mapping = aes(x=Month,y=Deaths))+
   scale_x_discrete(limits = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"))+
   geom_boxplot()+
-  ggtitle("Deaths per month in 2020")+
+  ylab("Crude Mortality")+
+  ggtitle("Crude Mortality per month in 2020")+
   theme(plot.title = element_text(size=16))+
   theme(axis.text.x = element_text(angle=45, hjust=1, size = 12),
         axis.text.y = element_text(size = 12),
-        axis.title=element_text(size=14))
+        axis.title=element_text(size=12))
 monthsex
-ggsave(filename = "death_distribution_month.tiff", width = 15, height = 10, device='tiff', dpi=700)
+ggsave(filename = "figures/mortality_distribution_month.png", width = 15, height = 5, device='png', dpi=700)
 ```
 
 ## Plotting
@@ -177,13 +178,14 @@ ggsave(filename = "death_distribution_month.tiff", width = 15, height = 10, devi
 
 monthsex <- ggplot(data = df, mapping = aes(x=Province,y=Deaths))+
   geom_boxplot()+
-  ggtitle("Deaths per province in 2020")+
+  ylab("Crude Mortality")+
+  ggtitle("Crude Mortality per province in 2020")+
   theme(plot.title = element_text(size=16))+
   theme(axis.text.x = element_text(angle=45, hjust=1, size = 6),
         axis.text.y = element_text(size = 12),
-        axis.title=element_text(size=14))
+        axis.title=element_text(size=10))
 monthsex
-ggsave(filename = "death_distribution_province.tiff", width = 15, height = 10, device='tiff', dpi=700)
+ggsave(filename = "figures/mortality_distribution_province.png", width = 20, height = 5, device='png', dpi=700)
 ```
 
 ## Grouping by Autonomic Community
@@ -232,13 +234,15 @@ df=data.frame(plotccaabp)
 
 monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=Deaths))+
   geom_boxplot()+
-  ggtitle("Deaths per CCAA in 2020")+
+  ylab("Crude Mortality")+
+  xlab("Autonomous Community")+
+  ggtitle("Crude Mortality per CCAA in 2020")+
   theme(plot.title = element_text(size=16))+
-  theme(axis.text.x = element_text(angle=45, hjust=1, size = 6),
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 9),
         axis.text.y = element_text(size = 12),
-        axis.title=element_text(size=14))
+        axis.title=element_text(size=10))
 monthccaa
-ggsave(filename = "death_distribution_ccaa.tiff", width = 15, height = 10, device='tiff', dpi=700)
+ggsave(filename = "figures/mortality_distribution_ccaa.png", width = 15, height = 5, device='png', dpi=700)
 ```
 
 ```{r 6 pressure, echo=FALSE}
@@ -254,11 +258,290 @@ df=data.frame(plotccaa_acc)
 
 monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=Deaths))+
   geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 0.7)+
-    ggtitle("Deaths per CCAA in 2020")+
+  ylab("Crude Mortality")+
+  xlab("Autonomous Community")+
+    ggtitle("Crude Mortality per CCAA in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 8),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=10))
+monthccaa
+ggsave(filename = "figures/mortality_sum_ccaa.png", width = 15, height = 7, device='png', dpi=700)
+```
+
+## Tasa de defunción por provincia en 2020
+
+```{r}
+death_census <- read.csv("Death_Census_Perc.csv")
+
+datapob19 <- death_census[, c('Lugar','men','women','pob19')]
+dataDR <- merge(data,datapob19,by="Lugar")
+
+```
+
+## Cálculo Death Rate por mes y provincia
+
+```{r}
+dataDR$DR <- NULL
+
+# Creating variables indexing rows by stratification population (Total,men,women)
+BOOLTOTAL <- which(dataDR['Sexo']=='Total')
+dataDR[BOOLTOTAL,'DR'] <- ( dataDR[BOOLTOTAL,'Total'] / dataDR[BOOLTOTAL,'pob19'] ) * 100000
+
+BOOLMEN <- which(dataDR['Sexo']=='Hombres')
+dataDR[BOOLMEN,'DR'] <- ( dataDR[BOOLMEN,'Total'] / dataDR[BOOLMEN, 'men'] ) * 100000
+
+BOOLWOMEN <- which(dataDR['Sexo']=='Mujeres')
+dataDR[BOOLWOMEN,'DR'] <- ( dataDR[BOOLWOMEN,'Total'] / dataDR[BOOLWOMEN,'women']) * 100000
+```
+
+```{r}
+
+datatotalmonth = dataDR[which(data["Lugar"]=="Total"),]
+datatotalmonth = datatotalmonth[which(data["Mes"]!="Total"),]
+datatotalmonth = datatotalmonth[which(data["Sexo"]=="Total"),]
+datatotalmonth = datatotalmonth %>% drop_na()
+datatotalmonth = datatotalmonth[,c("Mes", "DR")]
+
+levels_order <-  c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+datatotalmonth[,"Mes"] <- levels_order
+
+# Necessary to reformat for ggplot
+plotmonth = melt(datatotalmonth)
+colnames(plotmonth) = c("Month", "Stratification", "DeathRate")
+
+
+```
+
+## Plotting
+
+```{r 10 pressure, echo=FALSE}
+#---------------------- Month plot
+
+
+ggplot(data = data.frame(plotmonth), mapping = aes(x=Month,y=DeathRate))+
+  scale_x_discrete(limits = levels_order)+
+  geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = .3)+
+  geom_path(aes(x = Month, y = DeathRate), size = 1.5, color="red", group = 1, linewidth = .5)+
+  ylab("Death Rate (per 100.000 inhabitants)")+
+  ggtitle("Death Rate per month in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=9))
+ggsave(filename = "figures/deathR_month.png", width = 15, height = 5, device='png', dpi=700)
+```
+
+## 2. Month Sex Deaths Bar Chart
+
+## Data preprocessing
+
+Taking total cases, sex data and month data, dropping missing values and translating month and sex labels
+
+```{r dp12}
+datatotalmonthsex = dataDR[which(data["Lugar"]=="Total"),]
+datatotalmonthsex = datatotalmonthsex[which(data["Mes"]!="Total"),]
+datatotalmonthsex = datatotalmonthsex %>% drop_na()
+```
+
+Subsetting and reformatting final dataframe
+
+```{r sbs12}
+datatotalmonthsex = datatotalmonthsex[,c("Mes", "Sexo","DR")]
+
+# This time for translation of labels it is necessary to replicate the sex for each of the three sex labels per  instance
+datatotalmonthsex["Sexo"] <- rep_len(c("Total", "Male", "Female"),3)
+
+# This time for translation of labels it is necessary to replicate the months for each of the three sex labels per instance
+levels_order <-  c(rep_len("January",3), rep_len("February",3), rep_len("March",3), rep_len("April",3), 
+                   rep_len("May",3), rep_len("June",3), rep_len("July",3), rep_len("August",3), 
+                   rep_len("September",3), rep_len("October",3), rep_len("November",3), rep_len("December",3))
+datatotalmonthsex[,"Mes"] <- levels_order
+
+# Necessary to reformat for ggplot
+plotmonthsex = melt(datatotalmonthsex)
+colnames(plotmonthsex) = c("Month", "Sex", "Stratification", "DeathRate")
+df=data.frame(plotmonthsex)
+```
+
+## Plotting
+
+```{r 23 pressure, echo=FALSE}
+#---------------------- Sex-Month plot
+
+
+monthsex <- ggplot(data = df, mapping = aes(x=Month,y=DeathRate))+
+  scale_x_discrete(limits = levels_order)+
+  geom_bar(data=df[df$Sex=="Total", ], stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 1.2)+
+  geom_point(data=df[df$Sex!="Total", ],aes(color=Sex, x = as.factor(Month), y = DeathRate, group=Sex), size = 2.5)+
+  geom_path(data=df[df$Sex!="Total", ], aes(color=Sex, x = as.factor(Month), y = DeathRate, group=Sex), size = 1.5, linewidth = .8)+
+  ylab("Death Rate (per 100.000 inhabitants)")+
+  ggtitle("Death Rate per month in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=9))
+monthsex  + scale_fill_manual("legend", values = c("Female" = "#F96666", "Male" = "#7895B2"))
+
+ggsave(filename = "figures/deathR_pmonth_sex.png", width = 15, height = 5, device='png', dpi=700)
+```
+
+## 3. Distribution of Deaths per month boxplot
+
+## Data preprocessing
+
+Taking total cases, sex data and month data, dropping missing values and translating month and sex labels
+
+```{r dp15}
+datatotal = dataDR[which(data["Lugar"]!="Total"),]
+datatotal = datatotal[which(data["Mes"]!="Total"),]
+datatotal = datatotal[which(data["Sexo"]=="Total"),]
+datatotal = datatotal %>% drop_na()
+```
+
+Subsetting and reformatting final dataframe
+
+```{r sbs13}
+datatotal = datatotal[,c("Lugar", "Mes", "DR")]
+
+# Gets number of provinces in the dataset for translation of month values through repetition
+numprov <- length(unique(datatotal["Lugar"])[,1])
+
+# This time for translation of labels it is necessary to replicate the months for each of the three sex labels per instance
+levels_order <-  rep_len(c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"), numprov)
+datatotal[,"Mes"] <- levels_order
+
+# Necessary to reformat for ggplot
+plottotalbp = melt(datatotal)
+colnames(plottotalbp) = c("Province", "Month", "Stratification","DeathRate")
+df=data.frame(plottotalbp)
+```
+
+## Plotting
+
+```{r 13 pressure, echo=FALSE}
+#---------------------- Sex-Month plot
+
+
+monthsex <- ggplot(data = df, mapping = aes(x=Month,y=DeathRate))+
+  scale_x_discrete(limits = c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"))+
+  geom_boxplot()+
+  ylab("Death Rate (per 100.000 inhabitants)")+
+  ggtitle("Death Rate per month in 2020")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 12),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=9))
+monthsex
+ggsave(filename = "figures/deathR_distribution_month.png", width = 15, height = 5, device='png', dpi=700)
+```
+
+## Plotting
+
+```{r 14 pressure, echo=FALSE}
+#---------------------- Sex-Month plot
+
+monthsex <- ggplot(data = df, mapping = aes(x=Province,y=DeathRate))+
+  geom_boxplot()+
+  ylab("Death Rate (per 100.000 inhabitants)")+
+  ggtitle("Death Rate per province in 2020")+
   theme(plot.title = element_text(size=16))+
   theme(axis.text.x = element_text(angle=45, hjust=1, size = 6),
         axis.text.y = element_text(size = 12),
-        axis.title=element_text(size=14))
+        axis.title=element_text(size=9))
+monthsex
+ggsave(filename = "figures/deathR_distribution_province.png", width = 20, height = 5, device='png', dpi=700)
+```
+
+## Grouping by Autonomic Community
+
+```{r impccaa2}
+
+map_ccaa_prov <- read.csv("data/ccaa_provincia.csv")
+colnames(map_ccaa_prov) <- c("CCAA","Lugar")
+dataccaa <- merge(dataDR,map_ccaa_prov,by="Lugar")
+
+```
+
+## Data preprocessing
+
+Taking total cases, sex data and month data, dropping missing values and translating month and sex labels
+
+```{r dp14}
+dataccaa = dataccaa[which(dataccaa["Lugar"]!="Total"),]
+dataccaa = dataccaa[which(dataccaa["Mes"]!="Total"),]
+dataccaa = dataccaa[which(dataccaa["Sexo"]=="Total"),]
+dataccaa = dataccaa %>% drop_na()
+```
+
+Subsetting and reformatting final dataframe
+
+```{r sbs14}
+dataccaa = dataccaa[,c("CCAA", "Mes", "DR")]
+
+# Gets number of provinces in the dataset for translation of month values through repetition
+numprov <- length(unique(datatotal["Lugar"])[,1])
+
+# This time for translation of labels it is necessary to replicate the months for each of the three sex labels per instance
+levels_order <-  rep_len(c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"), numprov)
+datatotal[,"Mes"] <- levels_order
+
+# Necessary to reformat for ggplot
+plotccaabp = melt(dataccaa)
+colnames(plotccaabp) = c("CCAA", "Month","Stratification","DeathRate")
+df=data.frame(plotccaabp)
+```
+
+## Plotting
+
+```{r 16 pressure, echo=FALSE}
+monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=DeathRate))+
+  geom_boxplot()+
+  ggtitle("Death Rate per CCAA in 2020")+
+  ylab("Death Rate (per 100.000 inhabitants)")+
+  xlab("Autonomous Community")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 9),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=9))
 monthccaa
-ggsave(filename = "death_sum_ccaa.tiff", width = 15, height = 10, device='tiff', dpi=700)
+ggsave(filename = "figures/deathR_distribution_ccaa.png", width = 15, height = 5, device='png', dpi=700)
+```
+
+```{r 17 pressure, echo=FALSE}
+datatotal <- data[which(data["Sexo"]=="Total"),]
+dataccaa <- merge(datatotal,map_ccaa_prov,by="Lugar")
+
+# Group by CCAA + sum deaths
+dataaccumulativeccaa = dataccaa %>% group_by(CCAA) %>%
+  summarise(sum.Total = sum(Total))
+
+# Group by CCAA + sum pop19
+datapobccaa <- merge(map_ccaa_prov,datapob19,by="Lugar")
+datapobccaa= datapobccaa %>% group_by(CCAA) %>%
+  summarise(sum.pob19 = sum(pob19))
+
+dataDR <- merge(datapobccaa,dataaccumulativeccaa,by="CCAA")
+dataDR$DR <- ( dataDR$sum.Total / dataDR$sum.pob19 ) * 100000
+dataDR <- dataDR[,c('CCAA','DR')]
+
+
+# Necessary to reformat for ggplot
+plotccaa_acc = melt(dataDR)
+colnames(plotccaa_acc) = c("CCAA", "Strat:Agg_Funct","DeathRate")
+df=data.frame(plotccaa_acc)
+
+#---------------------- Sex-Month plot
+
+monthccaa <- ggplot(data = df, mapping = aes(x=CCAA,y=DeathRate))+
+  geom_bar(stat = "identity", position = 'dodge', color = "#7895B2", fill = "white", width = 0.7)+
+    ggtitle("Death Rate per CCAA in 2020")+
+  ylab("Death Rate (per 100.000 inhabitants)")+
+  xlab("Autonomous Community")+
+  theme(plot.title = element_text(size=16))+
+  theme(axis.text.x = element_text(angle=45, hjust=1, size = 8),
+        axis.text.y = element_text(size = 12),
+        axis.title=element_text(size=9))
+monthccaa
+ggsave(filename = "figures/deathR_sum_ccaa.png", width = 15, height = 7, device='png', dpi=700)
 ```
