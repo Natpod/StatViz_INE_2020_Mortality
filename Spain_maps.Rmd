@@ -5,7 +5,9 @@ output:
   html_document:
     df_print: paged
 ---
+
 ### Libraries
+
 ```{r}
 library(sf)
 library(mapSpain) # https://doi.org/10.5281/zenodo.5366622, https://ropenspain.github.io/mapSpain/
@@ -14,10 +16,12 @@ library(ggplot2)
 ```
 
 ## DATA
+
 ```{r}
-mydata<-read.csv("~/Desktop/estadistica/statistics2/Provincias_datos.csv")
+mydata<-read.csv("Provincias_datos.csv")
 mydata
 ```
+
 ```{r}
 #Getting the total number of deaths by province differentiating between sex
 totaldata_sex <- mydata[mydata$Mes == "Total",]
@@ -32,6 +36,7 @@ totaldata
 total_sum <- totaldata[,c(1,4)]
 total_sum
 ```
+
 ```{r}
 # Getting province codes and adding them to the summary table
 cpro <- esp_dict_region_code(total_sum$Lugar, origin = "text", destination = "cpro")
@@ -67,7 +72,9 @@ death_census # table with all usefull information
 
 
 ```
+
 ## Mortality rate in 2020 (per 100.000 population)
+
 ```{r}
 
 # Plotting spain map divided by provinces
@@ -101,7 +108,9 @@ ggplot(esp_prov) +
 ggsave(file="./mortalityrateSpain.png", width = 12, height = 6, device='png', dpi=700)
 
 ```
+
 ## Total number of deaths per province in Spain in 2020
+
 ```{r}
 
 # Plotting spain map divided by provinces
@@ -135,7 +144,9 @@ ggplot(esp_prov) +
 ggsave(file="./totaldeathSpain.png", width = 12, height = 6, device='png', dpi=700)
 
 ```
+
 ## Population density in Spain, 2019
+
 ```{r}
 
 # Plotting spain map divided by provinces
@@ -169,7 +180,9 @@ ggplot(esp_prov) +
 ggsave(file="./populationSpain.png", width = 12, height = 6, device='png', dpi=700)
 
 ```
+
 ## "Mortality rate in Spain (per 100.000 population) in January 2020
+
 ```{r}
 # Getting total number of deaths by province in January
 enero <- mydata[mydata$Mes == "Enero",]
@@ -189,6 +202,7 @@ rate_enero$porc_muerte_lab <-
   paste0(round(100000 * rate_enero$porc_muerte, 2), "%")
 rate_enero
 ```
+
 ```{r}
 # Plotting spain map divided by provinces
 esp_prov <- esp_get_prov_siane() 
@@ -222,7 +236,9 @@ ggplot(esp_prov) +
 ggsave(file="./mortalityJanuary.png", width = 12, height = 6, device='png', dpi=700)
 
 ```
+
 ## Mortality rate in Spain (per 100.000 population) in April 2020
+
 ```{r}
 # Getting total number of deaths by province in April
 abril <- mydata[mydata$Mes == "Abril",]
@@ -280,15 +296,18 @@ ggsave(file="./mortalityApril.png", width = 12, height = 6, device='png', dpi=70
 ```
 
 ## Mortality in Spain per Autonomous Community
+
 ```{r}
-ccaa_mort <-read.csv("~/Desktop/estadistica/statistics2/CCAA_DR_Mortality_Population.csv")
+ccaa_mort <-read.csv("CCAA_DR_Mortality_Population.csv")
 
 codauto <- esp_dict_region_code(ccaa_mort$CCAA, origin = "text", destination = "codauto")
 ccaa_mort$codauto <- codauto
 ccaa_mort<- ccaa_mort[order(ccaa_mort$codauto),] # order by cpro
 ccaa_mort
 ```
+
 ### Mortality rate per Autonomous Comunity
+
 ```{r}
 CCAA <- esp_get_ccaa()
 CCAA <- merge(CCAA, ccaa_mort)
@@ -321,7 +340,9 @@ ggplot(CCAA) +
 ggsave(file="./mortalityrateSpainccaa.png", width = 12, height = 6, device='png', dpi=700)
 
 ```
+
 ### Total number of deaths per Autonomous Community
+
 ```{r}
 CCAA <- esp_get_ccaa()
 CCAA <- merge(CCAA, ccaa_mort)
@@ -355,3 +376,47 @@ ggsave(file="./totaldeathSpainccaa.png", width = 12, height = 6, device='png', d
 
 ```
 
+## Average age in 2019 rate per Province
+
+```{r}
+prov_age <-read.csv("AvgAgeProvince2019.csv")
+
+colnames(prov_age) <- c("prov.shortname.es", "Age")
+```
+
+Plotting
+
+```{r}
+
+# Plotting spain map divided by provinces
+esp_prov <- esp_get_prov_siane() 
+esp_prov <- merge(esp_prov, prov_age, by="prov.shortname.es")
+can_prov <- esp_get_can_provinces()
+Can <- esp_get_can_box()
+
+ggplot(esp_prov) +
+  geom_sf(aes(fill = Age),  # coloring provinces by death rate
+    color = "grey70",
+    linewidth = .3, 
+  ) +
+  geom_sf(data = Can, color = "grey70") +
+  scale_fill_gradientn(
+    colors = hcl.colors(10,"BrwnY", rev = TRUE), # defining gradient of colors
+    n.breaks = 6,
+    limits = c(35, 51),
+    labels = function(x) {   # printing formatted labels
+      sprintf("%s years", x)
+    },
+    guide = guide_legend(title = "Averate Age")
+  ) +
+   labs(    # lables and titles
+    title = "Averate Age per province in Spain at the end of 2019",
+    subtitle = "INE Data (2019)"
+  ) +
+  geom_sf(data = can_prov) +
+  geom_sf(data = Can) +
+  theme_void() +
+  theme(legend.position = c(0.1, 0.6))
+ggsave(file="./ageprovince.png", width = 12, height = 6, device='png', dpi=700)
+
+```
