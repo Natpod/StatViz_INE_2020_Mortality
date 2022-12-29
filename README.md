@@ -1,5 +1,5 @@
 # StatViz_INE_2020_Mortality
-Code and Description for Visualizations for the Master in Computational Biology Statistic Data Analysis and Visualization course in 2020 Mortality INE dataset(2022)
+Code and Description for Visualizations for the Master in Computational Biology Statistic Data Analysis and Visualization course in *2020 Spain Mortality INE datasets*(2022)
 Authors : Lucía Martín Fernandez, Ana Solbas Casajús, Ángela Gómez Sacristán and Natalia García Sánchez
 
 
@@ -21,4 +21,4 @@ In addition, there are three R markdown files that have been used to generate th
 - `Spain_maps.Rmd`: script used to generate the Spain map plots containing information about the 2020 death rates by province and Autonomous Community. 
 - `mortalityRatePerYear.Rmd`: script used to generate the time series plots for death rate and life expectancy in Spain as well as the death rate per age and sex in 2020 barplot. 
 
-Dependencies : *mapSpain, reshape2, ggplot2, sf, dplyr, tidyr* should be preinstalled in an R environment
+Dependencies : *mapSpain, reshape2, ggplot2, sf, dplyr, tidyr, tidyverse* should be preinstalled in an R environment
