@@ -1,5 +1,5 @@
 ---
-title: "Mortality rate in Spain 2020"
+title: "Barplots for crude mortality rates and rates per 100,000 inhabitants in Spain 2020"
 authors: "Natalia Garcia, Ángela Gómez, Lucía Martín, Ana Solbas"
 output:
   html_document:
