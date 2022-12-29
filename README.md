@@ -1,6 +1,8 @@
 # StatViz_INE_2020_Mortality
 Code and Description for Visualizations for the Master in Computational Biology Statistic Data Analysis and Visualization course in *2020 Spain Mortality INE datasets*(2022)
-Authors : Lucía Martín Fernandez, Ana Solbas Casajús, Ángela Gómez Sacristán and Natalia García Sánchez
+
+
+**Authors** : Lucía Martín Fernandez, Ana Solbas Casajús, Ángela Gómez Sacristán and Natalia García Sánchez
 
 
 Data corresponds to the following datasets and come from the following corresponding sources:
