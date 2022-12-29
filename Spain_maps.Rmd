@@ -67,13 +67,13 @@ census_prov$porc_women_lab <-
 death_census <- merge(total_sum, census_prov)
 death_census$porc_muerte <- death_census$Total / death_census$pob19
 death_census$porc_muerte_lab <-
-  paste0(round(100000 * death_census$porc_muerte, 2))
+  paste0(round(1000 * death_census$porc_muerte, 2))
 death_census # table with all usefull information
 
 
 ```
 
-## Mortality rate in 2020 (per 100.000 population)
+## Mortality rate in 2020 (per 1000 population)
 
 ```{r}
 
@@ -93,12 +93,12 @@ ggplot(esp_prov) +
     colors = hcl.colors(10, "Reds", rev = TRUE), # defining gradient of colors
     n.breaks = 10,
     labels = function(x) {         # printing formatted labels
-      sprintf("%1.0f",100000 * x)
+      sprintf("%1.0f",1000 * x)
     },
     guide = guide_legend(title = "Mortality rate")
   ) +
    labs(      # labels and tittles
-    title = "Mortality rate in Spain (per 100.000 population)",
+    title = "Mortality rate in Spain (per 1000 population)",
     subtitle = "INE Data (2020)"
   ) +
   geom_sf(data = can_prov) +
@@ -181,7 +181,7 @@ ggsave(file="./populationSpain.png", width = 12, height = 6, device='png', dpi=7
 
 ```
 
-## "Mortality rate in Spain (per 100.000 population) in January 2020
+## "Mortality rate in Spain (per 1000 population) in January 2020
 
 ```{r}
 # Getting total number of deaths by province in January
@@ -199,7 +199,7 @@ enero <- enero[order(enero$cpro),] # order by cpro
 rate_enero <- merge(enero, census_prov)
 rate_enero$porc_muerte <- rate_enero$Total / rate_enero$pob19
 rate_enero$porc_muerte_lab <-
-  paste0(round(100000 * rate_enero$porc_muerte, 2), "%")
+  paste0(round(1000 * rate_enero$porc_muerte, 2), "%")
 rate_enero
 ```
 
@@ -219,14 +219,14 @@ ggplot(esp_prov) +
   scale_fill_gradientn(
     colors = hcl.colors(10, "Greens", rev = TRUE), # defining gradient of colors
     n.breaks = 6,
-    limits = c(0, 130/100000),
+    limits = c(0, 130/1000),
     labels = function(x) {   # printing formatted labels
-      sprintf("%1.0f",100000 * x)
+      sprintf("%1.0f",1000 * x)
     },
     guide = guide_legend(title = "Mortality rate")
   ) +
    labs(    # lables and titles
-    title = "Mortality rate in Spain (per 100.000 population) in January 2020",
+    title = "Mortality rate in Spain (per 1000 population) in January 2020",
     subtitle = "INE Data (2020)"
   ) +
   geom_sf(data = can_prov) +
@@ -237,7 +237,7 @@ ggsave(file="./mortalityJanuary.png", width = 12, height = 6, device='png', dpi=
 
 ```
 
-## Mortality rate in Spain (per 100.000 population) in April 2020
+## Mortality rate in Spain (per 1000 population) in April 2020
 
 ```{r}
 # Getting total number of deaths by province in April
@@ -255,7 +255,7 @@ abril <- abril[order(abril$cpro),] # order by cpro
 rate_abril <- merge(abril, census_prov)
 rate_abril$porc_muerte <- rate_abril$Total / rate_abril$pob19
 rate_abril$porc_muerte_lab <-
-  paste0(round(100000 * rate_abril$porc_muerte, 2), "%")
+  paste0(round(1000 * rate_abril$porc_muerte, 2), "%")
 rate_abril
 
 ```
@@ -277,14 +277,14 @@ ggplot(esp_prov) +
   scale_fill_gradientn(
     colors = hcl.colors(10, "Greens", rev = TRUE), # defining gradient of colors
     n.breaks = 6,
-    limits = c(0, 130/100000),
+    limits = c(0, 130/1000),
     labels = function(x) {   # printing formatted labels
-      sprintf("%1.0f",100000 * x)
+      sprintf("%1.0f",1000 * x)
     },
     guide = guide_legend(title = "Mortality rate")
   ) +
    labs(    # lables and titles
-    title = "Mortality rate in Spain (per 100.000 population) in April 2020",
+    title = "Mortality rate in Spain (per 1000 population) in April 2020",
     subtitle = "INE Data (2020)"
   ) +
   geom_sf(data = can_prov) +
@@ -323,14 +323,13 @@ ggplot(CCAA) +
   scale_fill_gradientn(
     colors = hcl.colors(10, "Reds", rev = TRUE), # defining gradient of colors
     n.breaks = 10,
-    #limits = c(0, 130/100000),
     labels = function(x) {   # printing formatted labels
       sprintf("%1.0f", x)
     },
     guide = guide_legend(title = "Mortality rate")
   ) +
    labs(    # lables and titles
-    title = "Mortality rate in Spain (per 100.000 population) in 2020 per A.C.",
+    title = "Mortality rate in Spain (per 1000 population) in 2020 per A.C.",
     subtitle = "INE Data (2020)"
   ) +
   geom_sf(data = can_prov) +
@@ -358,7 +357,6 @@ ggplot(CCAA) +
   scale_fill_gradientn(
     colors = hcl.colors(10, "Reds", rev = TRUE), # defining gradient of colors
     n.breaks = 10,
-    #limits = c(0, 130/100000),
     labels = function(x) {   # printing formatted labels
       sprintf("%1.0f", x)
     },
