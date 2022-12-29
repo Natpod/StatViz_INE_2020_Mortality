@@ -105,7 +105,7 @@ ggplot(esp_prov) +
   geom_sf(data = Can) +
   theme_void() +
   theme(legend.position = c(0.1, 0.6))
-ggsave(file="./mortalityrateSpain.png", width = 12, height = 6, device='png', dpi=700)
+ggsave(file="./mortalityrateSpain.svg", width = 12, height = 6, device='svg', dpi=700)
 
 ```
 
@@ -141,7 +141,7 @@ ggplot(esp_prov) +
   geom_sf(data = Can) +
   theme_void() +
   theme(legend.position = c(0.1, 0.6))
-ggsave(file="./totaldeathSpain.png", width = 12, height = 6, device='png', dpi=700)
+ggsave(file="./totaldeathSpain.svg", width = 12, height = 6, device='svg', dpi=700)
 
 ```
 
@@ -177,7 +177,7 @@ ggplot(esp_prov) +
   geom_sf(data = Can) +
   theme_void() +
   theme(legend.position = c(0.1, 0.6))
-ggsave(file="./populationSpain.png", width = 12, height = 6, device='png', dpi=700)
+ggsave(file="./populationSpain.svg", width = 12, height = 6, device='svg', dpi=700)
 
 ```
 
@@ -219,9 +219,9 @@ ggplot(esp_prov) +
   scale_fill_gradientn(
     colors = hcl.colors(10, "Greens", rev = TRUE), # defining gradient of colors
     n.breaks = 6,
-    limits = c(0, 130/1000),
+    limits = c(0, 1.3/1000),
     labels = function(x) {   # printing formatted labels
-      sprintf("%1.0f",1000 * x)
+      sprintf("%s",1000 * x)
     },
     guide = guide_legend(title = "Mortality rate")
   ) +
@@ -233,7 +233,7 @@ ggplot(esp_prov) +
   geom_sf(data = Can) +
   theme_void() +
   theme(legend.position = c(0.1, 0.6))
-ggsave(file="./mortalityJanuary.png", width = 12, height = 6, device='png', dpi=700)
+ggsave(file="./mortalityJanuary.svg", width = 12, height = 6, device='svg', dpi=700)
 
 ```
 
@@ -277,9 +277,9 @@ ggplot(esp_prov) +
   scale_fill_gradientn(
     colors = hcl.colors(10, "Greens", rev = TRUE), # defining gradient of colors
     n.breaks = 6,
-    limits = c(0, 130/1000),
+    limits = c(0, 1.3/1000),
     labels = function(x) {   # printing formatted labels
-      sprintf("%1.0f",1000 * x)
+      sprintf("%s",1000 * x)
     },
     guide = guide_legend(title = "Mortality rate")
   ) +
@@ -291,7 +291,7 @@ ggplot(esp_prov) +
   geom_sf(data = Can) +
   theme_void() +
   theme(legend.position = c(0.1, 0.6))
-ggsave(file="./mortalityApril.png", width = 12, height = 6, device='png', dpi=700)
+ggsave(file="./mortalityApril.svg", width = 12, height = 6, device='svg', dpi=700)
 
 ```
 
@@ -336,7 +336,7 @@ ggplot(CCAA) +
   geom_sf(data = Can) +
   theme_void() +
   theme(legend.position = c(0.1, 0.6))
-ggsave(file="./mortalityrateSpainccaa.png", width = 12, height = 6, device='png', dpi=700)
+ggsave(file="./mortalityrateSpainccaa.svg", width = 12, height = 6, device='svg', dpi=700)
 
 ```
 
@@ -370,7 +370,7 @@ ggplot(CCAA) +
   geom_sf(data = Can) +
   theme_void() +
   theme(legend.position = c(0.1, 0.6))
-ggsave(file="./totaldeathSpainccaa.png", width = 12, height = 6, device='png', dpi=700)
+ggsave(file="./totaldeathSpainccaa.svg", width = 12, height = 6, device='svg', dpi=700)
 
 ```
 
@@ -415,6 +415,6 @@ ggplot(esp_prov) +
   geom_sf(data = Can) +
   theme_void() +
   theme(legend.position = c(0.1, 0.6))
-ggsave(file="./ageprovince.png", width = 12, height = 6, device='png', dpi=700)
+ggsave(file="./ageprovince.svg", width = 12, height = 6, device='svg', dpi=700)
 
 ```
