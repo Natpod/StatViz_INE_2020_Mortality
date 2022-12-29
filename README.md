@@ -8,7 +8,7 @@ Data comes from the following sources:
 - **Crude mortality rate (per year)**: https://www.ine.es/jaxiT3/Tabla.htm?t=1411&L=0 
 - **Mortality rate per year, age and sex**: https://www.ine.es/jaxiT3/Tabla.htm?t=27150
 - **Death causes**: https://datos.gob.es/en/catalogo/ea0010587-defunciones-por-causas-capitulos-sexo-y-provincia-ecm-identificador-api-49044
-- **Average age in population per Autonomous Community** : https://www.ine.es/jaxiT3/Datos.htm?t=3198#!tabs-tabla
+- **Average age in population per Autonomous Community in the end of 2019** : https://www.ine.es/jaxiT3/Datos.htm?t=3198#!tabs-tabla
 
 In addition, there are three R markdown files that have been used to generate the visualizations for the assignment. 
 
