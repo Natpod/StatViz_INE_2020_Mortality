@@ -1,7 +1,9 @@
 ---
-title: "Mortality_per_Year"
-output: html_document
-date: "2022-12-27"
+title: "Mortality - causes of death, life expectancy per year periods in Spain and mortality in population age groups in 2020"
+authors: "Natalia Garcia, Ángela Gómez, Lucía Martín, Ana Solbas"
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
