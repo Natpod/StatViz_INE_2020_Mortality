@@ -4,11 +4,22 @@ Authors : Lucía Martín Fernandez, Ana Solbas Casajús, Ángela Gómez Sacrist�
 
 Data comes from the following sources: 
 
-- **Mortality rate in Spanish provinces (2020)**: https://datos.gob.es/en/catalogo/ea0010587-defunciones-por-lugar-de-residencia-capitales-mes-de-la-defuncion-y-sexo-mnpd-identificador-api-t20-e301-defun-a2020-l0-20009-px  
+Data corresponds to the following datasets (sources commented on https://github.com/Natpod/StatViz_INE_2020_Mortality):
+
+| Filename   |      Description      |  Used in code | Source |
+|----------|:-------------:|:-------------:|:-------------:|
+| `Provincias_datos.csv` |  Mortality rate in Spanish provinces (2020) - manually preprocessed | `BarplotsINEDeaths.Rmd`, `mortalityRatePerYear.Rmd`, `Spain_maps.Rmd`[links](https://github.com/Natpod/StatViz_INE_2020_Mortality) | [datos.gob.es](https://datos.gob.es/en/catalogo/ea0010587-defunciones-por-lugar-de-residencia-capitales-mes-de-la-defuncion-y-sexo-mnpd-identificador-api-t20-e301-defun-a2020-l0-20009-px)  | 
+| `crudeMortality.csv` |   Crude mortality rate (per year)  |  `BarplotsINEDeaths.Rmd`, `mortalityRatePerYear.Rmd`, `Spain_maps.Rmd` [links](https://github.com/Natpod/StatViz_INE_2020_Mortality) | [INE](https://www.ine.es/jaxiT3/Tabla.htm?t=1411&L=0) |
+| `mortalityRate.csv` | Mortality rate per year, age and sex |  `mortalityRatePerYear.Rmd` [links](https://github.com/Natpod/StatViz_INE_2020_Mortality) |
+| `causas_muerte.csv` | Death causes from 2010 to 2020|  `mortalityRatePerYear.Rmd` [links](https://github.com/Natpod/StatViz_INE_2020_Mortality) | [INE](https://www.ine.es/jaxiT3/Tabla.htm?t=27150) | [datos.gob.es](https://datos.gob.es/en/catalogo/ea0010587-defunciones-por-causas-capitulos-sexo-y-provincia-ecm-identificador-api-49044) |
+| `ccaa_provincia.csv` | File mapping Autonomous Community to Province - manually preprocessed |  `BarplotsINEDeaths.Rmd` [links](https://github.com/Natpod/StatViz_INE_2020_Mortality)| [INE](https://www.ine.es/daco/daco42/codmun/cod_ccaa_provincia.htm) |
+| `CCAA_DR_Mortality_Population.csv` | Crude and per 100,000 Mortality rates per Autonomous Community in 2020 | `Spain_maps.Rmd`[link](https://github.com/Natpod/StatViz_INE_2020_Mortality/blob/main/Spain_maps.Rmd) | crafted in `BarplotsINEDeaths.Rmd` |
+
+- **Mortality rate in Spanish provinces (2020)**: 
 - **Crude mortality rate (per year)**: https://www.ine.es/jaxiT3/Tabla.htm?t=1411&L=0 
 - **Mortality rate per year, age and sex**: https://www.ine.es/jaxiT3/Tabla.htm?t=27150
 - **Death causes**: https://datos.gob.es/en/catalogo/ea0010587-defunciones-por-causas-capitulos-sexo-y-provincia-ecm-identificador-api-49044
-- **Average age in population per Autonomous Community in the end of 2019** : https://www.ine.es/jaxiT3/Datos.htm?t=3198#!tabs-tabla
+
 - **File mapping Autonomous Community to Province**: https://www.ine.es/daco/daco42/codmun/cod_ccaa_provincia.htm
 - **Crude and per 100,000 Mortality rates per Autonomous Community in 2020** : crafted in `BarplotsINEDeaths.Rmd`
 
