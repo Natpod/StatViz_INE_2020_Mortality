@@ -9,6 +9,8 @@ Data comes from the following sources:
 - **Mortality rate per year, age and sex**: https://www.ine.es/jaxiT3/Tabla.htm?t=27150
 - **Death causes**: https://datos.gob.es/en/catalogo/ea0010587-defunciones-por-causas-capitulos-sexo-y-provincia-ecm-identificador-api-49044
 - **Average age in population per Autonomous Community in the end of 2019** : https://www.ine.es/jaxiT3/Datos.htm?t=3198#!tabs-tabla
+- **File mapping Autonomous Community to Province**: https://www.ine.es/daco/daco42/codmun/cod_ccaa_provincia.htm
+- **Crude and per 100,000 Mortality rates per Autonomous Community in 2020** : crafted in `BarplotsINEDeaths.Rmd`
 
 In addition, there are three R markdown files that have been used to generate the visualizations for the assignment. 
 
